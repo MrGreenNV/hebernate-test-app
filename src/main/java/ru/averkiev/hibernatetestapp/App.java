@@ -28,8 +28,7 @@ public class App
 
             // Работа с данными
             Person person = session.get(Person.class, 1);
-            System.out.println(person.getName());
-            System.out.println(person.getAge());
+            System.out.println(person.getName() + person.getAge());
 
             // Завершение транзакции
             session.getTransaction().commit();
