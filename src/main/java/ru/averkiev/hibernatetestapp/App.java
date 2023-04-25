@@ -4,11 +4,11 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import ru.averkiev.hibernatetestapp.model.Item;
+import ru.averkiev.hibernatetestapp.model.Passport;
 import ru.averkiev.hibernatetestapp.model.Person;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public class App
 {
@@ -18,7 +18,8 @@ public class App
         // Указываем класс, помеченный @Entity, тем самым указывая hibernate класс являющийся нашей сущностью
         Configuration configuration = new Configuration()
                 .addAnnotatedClass(Person.class)
-                .addAnnotatedClass(Item.class);
+                .addAnnotatedClass(Item.class)
+                .addAnnotatedClass(Passport.class);
 
         // Создаем фабрику сессии из конфигурации
         SessionFactory sessionFactory = configuration.buildSessionFactory();
@@ -30,15 +31,11 @@ public class App
             session.beginTransaction();
 
             // Работа с данными
+            Person person = new Person("TestPassport", 50);
+            Passport passport = new Passport(999777);
+            person.setPassport(passport);
 
-            Person person = session.get(Person.class, 4);
-            Item item = session.get(Item.class, 1);
-
-            item.getOwner().getItems().remove(item);
-
-            item.setOwner(person);
-            person.getItems().add(item);
-
+            session.persist(person);
 
             // Завершение транзакции
             session.getTransaction().commit();
