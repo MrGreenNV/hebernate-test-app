@@ -5,11 +5,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import ru.averkiev.hibernatetestapp.model.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-
 public class App {
     public static void main(String[] args) {
         // Подключение конфигурации hibernate.properties
@@ -32,18 +27,15 @@ public class App {
 
             // Работа с данными
 
-            Movie movie = session.get(Movie.class, 2);
-            Actor actor = session.get(Actor.class, 3);
-            movie.getActors().remove(actor);
-            actor.getMovies().remove(movie);
+            Item item = session.get(Item.class, 7);
+            System.out.println("Get Item");
 
+            System.out.println(item.getOwner());
 
             // Завершение транзакции
             session.getTransaction().commit();
 
             // Закрытие фабрики сессии автоматически
         }
-
-
     }
 }
