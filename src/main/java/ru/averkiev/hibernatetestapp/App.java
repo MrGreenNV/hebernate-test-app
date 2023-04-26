@@ -3,23 +3,23 @@ package ru.averkiev.hibernatetestapp;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import ru.averkiev.hibernatetestapp.model.Item;
-import ru.averkiev.hibernatetestapp.model.Passport;
-import ru.averkiev.hibernatetestapp.model.Person;
+import ru.averkiev.hibernatetestapp.model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
-public class App
-{
-    public static void main( String[] args )
-    {
+
+public class App {
+    public static void main(String[] args) {
         // Подключение конфигурации hibernate.properties
         // Указываем класс, помеченный @Entity, тем самым указывая hibernate класс являющийся нашей сущностью
         Configuration configuration = new Configuration()
                 .addAnnotatedClass(Person.class)
                 .addAnnotatedClass(Item.class)
-                .addAnnotatedClass(Passport.class);
+                .addAnnotatedClass(Passport.class)
+                .addAnnotatedClass(Actor.class)
+                .addAnnotatedClass(Movie.class);
 
         // Создаем фабрику сессии из конфигурации
         SessionFactory sessionFactory = configuration.buildSessionFactory();
@@ -31,11 +31,12 @@ public class App
             session.beginTransaction();
 
             // Работа с данными
-            Person person = new Person("TestPassport", 50);
-            Passport passport = new Passport(999777);
-            person.setPassport(passport);
 
-            session.persist(person);
+            Movie movie = session.get(Movie.class, 2);
+            Actor actor = session.get(Actor.class, 3);
+            movie.getActors().remove(actor);
+            actor.getMovies().remove(movie);
+
 
             // Завершение транзакции
             session.getTransaction().commit();

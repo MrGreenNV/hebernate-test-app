@@ -2,12 +2,12 @@ package ru.averkiev.hibernatetestapp.model;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
-@Table(name = "Person")
-public class Person {
+@Table(name = "Actor")
+public class Actor {
 
     @Id
     @Column(name = "id")
@@ -20,27 +20,20 @@ public class Person {
     @Column(name = "age")
     private int age;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.PERSIST)
-    private List<Item> items;
+    @ManyToMany
+    @JoinTable(
+            name = "Actor_Movie",
+            joinColumns = @JoinColumn(name = "actor_id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id")
+    )
+    List<Movie> movies;
 
-    @OneToOne(mappedBy = "person", cascade = CascadeType.PERSIST)
-    private Passport passport;
-
-    public Person() {
+    public Actor() {
     }
 
-    public Person(String name, int age) {
+    public Actor(String name, int age) {
         this.name = name;
         this.age = age;
-    }
-
-    public Passport getPassport() {
-        return passport;
-    }
-
-    public void setPassport(Passport passport) {
-        this.passport = passport;
-        passport.setPerson(this);
     }
 
     public int getId() {
@@ -67,26 +60,30 @@ public class Person {
         this.age = age;
     }
 
-    public List<Item> getItems() {
-        return items;
+    public List<Movie> getMovies() {
+        return movies;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
+    public void setMovies(List<Movie> movies) {
+        this.movies = movies;
     }
 
-    public void addItem(Item item) {
-        if (this.items == null) {
-            this.items = new ArrayList<>();
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Actor actor = (Actor) o;
+        return id == actor.id && age == actor.age && Objects.equals(name, actor.name);
+    }
 
-        this.items.add(item);
-        item.setOwner(this);
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, age);
     }
 
     @Override
     public String toString() {
-        return "Person{" +
+        return "Actor{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age +
